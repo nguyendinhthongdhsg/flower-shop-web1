@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.jpg">
+    <link rel="stylesheet" href="./assets/fonts/fontawesome-free-6.4.2-web/css/all.min.css">
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <title>Cửa hàng hoa</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="/"><img src="./assets/images/Logo.png" alt="logo-shop" /></a>
+        </div>
+        <div class="tasks">
+            <div class="search">
+                <form class="search_form">
+                    <input type="search" placeholder="Tìm kiếm" name="search" autocomplete="off" spellcheck="false" />
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+                <div class="search_filter">
+                    <div class="head_filter">Lọc theo:</div>
+                    <div class="typeFlower_filter">
+                        <ul id="typeFlower_filter">
+                            <li id="typeFlower_filter_li" onclick="handlerShowListTypeFlower('first_li')">
+                                <span>Loại hoa</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </li>
+                            <li onclick="handlerShowListTypeFlower('Hoa bó')">Hoa bó</li>
+                            <li onclick="handlerShowListTypeFlower('Bình hoa')">Bình hoa</li>
+                            <li onclick="handlerShowListTypeFlower('Giỏ hoa')">Giỏ hoa</li>
+                            <li onclick="handlerShowListTypeFlower('Hộp hoa')">Hộp hoa</li>
+                            <li onclick="handlerShowListTypeFlower('Hoa cưới')">Hoa cưới</li>
+                            <li onclick="handlerShowListTypeFlower('Hoa Tulip')">Hoa Tulip</li>
+                            <li onclick="handlerShowListTypeFlower('Lan Hồ Điệp')">Lan Hồ Điệp</li>
+                            <li onclick="handlerShowListTypeFlower('Hoa Mẫu Đơn')">Hoa Mẫu Đơn</li>
+                        </ul>
+                    </div>
+                    <div class="typeFlower_filter priceFlower_filter">
+                        <ul id="priceFlower_filter">
+                            <li id="priceFlower_filter_li" onclick="handlerShowListPriceFlower('first_li')">
+                                <span>Giá</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </li>
+                            <li onclick="handlerShowListPriceFlower('Trên 6 triệu đồng')">Trên 6 triệu đồng</li>
+                            <li onclick="handlerShowListPriceFlower('Từ 4 đến 6 triệu đồng')">Từ 4 đến 6 triệu đồng</li>
+                            <li onclick="handlerShowListPriceFlower('Từ 2 đến 4 triệu đồng')">Từ 2 đến 4 triệu đồng</li>
+                            <li onclick="handlerShowListPriceFlower('Dưới 2 triệu đồng')">Dưới 2 triệu đồng</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="user" class="user">
+            <div class="login">
+                <button onclick="handlerShowModal()" type="button">Đăng nhập</button>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="main-wrapper">
+            <div id="main-content" class="main-content"></div>
+        </div>
+    </main>
+    <footer class="footer">
+
+    </footer>
+
+    <!-- Modal login -->
+    <div id="modal-login" class="modal">
+        <div id="modal-wrapper" class="modal-wrapper">
+            <div id="modal-content" class="modal-content">
+                <h2 class="modal-heading">Cửa hàng hoa</h2>
+                <h3 class="modal-subHead">Đăng nhập</h3>
+                <form class="modal-form">
+                    <input type="text" name="account" placeholder="Tên đăng nhập" autocomplete="off"
+                        spellcheck="false" />
+                    <input type="password" name="password" placeholder="Mật khẩu" autocomplete="off"
+                        spellcheck="false" />
+                    <button type="submit">Đăng nhập</button>
+                </form>
+                <div class="message-redirect">
+                    <p>Bạn chưa có tài khoản?</p>
+                    <p class="message-redirect-link" onclick="handlerShowModalRegis()">Đăng ký</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal register -->
+    <div id="modal-register" class="modal">
+        <div id="modal-wrapper" class="modal-wrapper">
+            <div id="modal-content" class="modal-content">
+                <h2 class="modal-heading">Cửa hàng hoa</h2>
+                <h3 class="modal-subHead">Đăng ký</h3>
+                <form class="modal-form">
+                    <input type="text" name="name" placeholder="Họ và tên" autocomplete="off" spellcheck="false" />
+                    <input type="text" name="account" placeholder="Tên đăng nhập" autocomplete="off"
+                        spellcheck="false" />
+                    <input type="password" name="password" placeholder="Mật khẩu" autocomplete="off"
+                        spellcheck="false" />
+                    <input type="password" name="a-password" placeholder="Nhập lại mật khẩu" autocomplete="off"
+                        spellcheck="false" />
+                    <button type="submit">Đăng ký</button>
+                </form>
+                <div class="message-redirect">
+                    <p>Bạn đã có tài khoản?</p>
+                    <p class="message-redirect-link" onclick="handlerShowModal()">Đăng nhập</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // user
+        function handlerShowMenu() {
+            document.querySelector('#user-menu>ul').classList.toggle('open')
+        }
+
+        function logout() {
+            localStorage.removeItem('user')
+            location.reload()
+        }
+
+        // check login
+        const user = document.getElementById('user')
+        let userInfo = JSON.parse(localStorage.getItem('user'))
+        if (userInfo) {
+            user.innerHTML = `<nav id="user-menu" class="user-menu" onclick="handlerShowMenu()">
+                            <div class="user-avatar">
+                                <i class="fa-solid fa-bars"></i>
+                                <i class="fa-solid fa-circle-user"></i>
+                            </div>
+                            <ul class="user-list">
+                                <li class="user-item-name">
+                                    ${userInfo.name}
+                                </li>
+                                <li>
+                                    <a href="/">
+                                        Trang chủ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        Giỏ hàng
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        Giới thiệu
+                                    </a>
+                                </li>
+                                <li class="user-item-logout" onclick="logout()">Đăng xuất</li>
+                            </ul>
+                        </nav>`
+        }
+
+        // Toast
+        function showSuccessToast(text) {
+            toastContent.innerHTML = `<div  class="toast-content"><i style="color: #30d158;" class="fa-solid fa-circle-check"></i><p>${text}</p></div>`
+            setTimeout(() => {
+                toastContent.classList.remove('show')
+            }, 3000)
+            toastContent.classList.add('show')
+        }
+
+        function showErrorToast(text) {
+            toastContent.innerHTML = `<div  class="toast-content"><i style="color: red;" class="fa-solid fa-circle-xmark"></i><p>${text}</p></div>`
+            setTimeout(() => {
+                toastContent.classList.remove('show')
+            }, 3000)
+            toastContent.classList.add('show')
+        }
+
+        const toastContent = document.getElementById('toast')
+
+        // Filter
+        const typeFlower = document.getElementById('typeFlower_filter')
+        const textTypeFlower = document.querySelector('#typeFlower_filter_li>span')
+
+        const priceFlower = document.getElementById('priceFlower_filter')
+        const textPriceFlower = document.querySelector('#priceFlower_filter_li>span')
+
+        function handlerShowListTypeFlower(event) {
+            if (event !== 'first_li') {
+                textTypeFlower.textContent = event
+            }
+            typeFlower.classList.toggle('open')
+        }
+
+        function handlerShowListPriceFlower(event) {
+            if (event !== 'first_li') {
+                textPriceFlower.textContent = event
+            }
+            priceFlower.classList.toggle('open')
+        }
+
+
+        // Login Register
+        const modalLogin = document.getElementById('modal-login')
+
+        const modalRegister = document.getElementById('modal-register')
+
+
+        function handlerShowModal() {
+            modalRegister.style.display = 'none'
+            modalLogin.style.display = 'flex'
+        }
+
+        function handlerShowModalRegis() {
+            modalLogin.style.display = 'none'
+            modalRegister.style.display = 'flex'
+        }
+
+        modalLogin.onclick = (e) => handlerCloseModal(e.target)
+        modalRegister.onclick = (e) => handlerCloseModal(e.target)
+
+        function handlerCloseModal(event) {
+            if (event.getAttribute('id') === 'modal-login' ||
+                event.getAttribute('id') === 'modal-register' ||
+                event.getAttribute('id') === 'modal-wrapper' ||
+                event.getAttribute('id') === 'close-modal') {
+                while (event.getAttribute('id') !== 'modal-login' && event.getAttribute('id') !== 'modal-register') {
+                    event = event.parentElement
+                }
+                event.style.display = 'none'
+            }
+        }
+
+        modalRegister.onsubmit = (e) => handlerRegister(e)
+
+        function handlerRegister(e) {
+            e.preventDefault()
+            let checkForm = true;
+            const listInput = document.querySelectorAll('#modal-register input')
+            for (let input of listInput) {
+                if (!checkInputForm(input)) {
+                    checkForm = false
+                }
+            }
+            if (checkForm) {
+                const listAccount = JSON.parse(localStorage.getItem('list-account'))
+                if (listAccount) {
+                    let checkAccount = true;
+                    const lengthListAccount = listAccount.length
+                    for (let i = 0; i < lengthListAccount; i++) {
+                        if (listAccount[i].account === listInput[1].value.trim()) {
+                            showErrorToast('Tên đăng nhập đã tồn tại')
+                            listInput[1].value = ''
+                            listInput[1].style.borderColor = 'red'
+                            checkAccount = false
+                            break
+                        }
+                    }
+                    if (checkAccount && checkFullName(listInput[0].value)
+                        && checkUserName(listInput[1].value)
+                        && listInput[2].value === listInput[3].value) {
+                        listAccount.push({
+                            name: listInput[0].value.trim(),
+                            account: listInput[1].value.trim(),
+                            password: listInput[2].value.trim()
+                        })
+                        localStorage.setItem('list-account', JSON.stringify(listAccount))
+                        resetForm(listInput)
+                        showSuccessToast('Đăng ký thành công')
+                    }
+                    else {
+                        if (!checkFullName(listInput[0].value)) {
+                            showErrorToast('Họ và tên không được chứa ký tự đặt biệt, không chứa chữ số')
+                            listInput[0].value = ''
+                            listInput[0].style.borderColor = 'red'
+                        }
+                        else if (!checkUserName(listInput[1].value)) {
+                            showErrorToast('Tên đăng nhập không được chứa khoảng trắng, không bắt đầu bằng chữ số')
+                            listInput[1].value = ''
+                            listInput[1].style.borderColor = 'red'
+                        }
+                        else if (listInput[2].value !== listInput[3].value) {
+                            showErrorToast('Nhập lại mật khẩu không trùng khớp')
+                            listInput[2].value = ''
+                            listInput[3].value = ''
+                            listInput[2].style.borderColor = 'red'
+                            listInput[3].style.borderColor = 'red'
+                        }
+                    }
+                }
+                else {
+                    if (checkFullName(listInput[0].value)
+                        && checkUserName(listInput[1].value)
+                        && listInput[2].value === listInput[3].value) {
+                        localStorage.setItem('list-account', JSON.stringify([{
+                            name: listInput[0].value.trim(),
+                            account: listInput[1].value.trim(),
+                            password: listInput[2].value.trim()
+                        }]))
+                        resetForm(listInput)
+                        showSuccessToast('Đăng ký thành công')
+                    }
+                    else {
+                        if (!checkFullName(listInput[0].value)) {
+                            showErrorToast('Họ và tên không được chứa ký tự đặt biệt, không chứa chữ số')
+                            listInput[0].value = ''
+                            listInput[0].style.borderColor = 'red'
+                        }
+                        else if (!checkUserName(listInput[1].value)) {
+                            showErrorToast('Tên đăng nhập không được chứa khoảng trắng, không bắt đầu bằng chữ số')
+                            listInput[1].value = ''
+                            listInput[1].style.borderColor = 'red'
+                        }
+                        else if (listInput[2].value !== listInput[3].value) {
+                            showErrorToast('Nhập lại mật khẩu không trùng khớp')
+                            listInput[2].value = ''
+                            listInput[3].value = ''
+                            listInput[2].style.borderColor = 'red'
+                            listInput[3].style.borderColor = 'red'
+                        }
+                    }
+                }
+            }
+            else {
+                showErrorToast('Vui lòng nhập chính xác thông tin')
+            }
+        }
+
+        // Bỏ dấu họ và tên
+        function removeAscent(str) {
+            if (str === null || str === undefined) return str
+            str = str.toLowerCase()
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i")
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+            str = str.replace(/đ/g, "d")
+            str = str.replace(/ /g, "")
+            return str
+        }
+
+        function checkFullName(userFullName) {
+            var re = /^[a-zA-Z!@#\$%\^\&*\)\(+=._-]{2,}$/g // regex here
+            return re.test(removeAscent(userFullName))
+        }
+
+        function checkUserName(userName) {
+            const length = userName.length
+            for (let i = 0; i < length; i++) {
+                if (userName[i] === ' ' || !isNaN(userName[i])) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        modalLogin.onsubmit = (e) => handlerLogin(e)
+
+        function handlerLogin(e) {
+            e.preventDefault()
+            let checkForm = true
+            const listInput = document.querySelectorAll('#modal-login input')
+            for (let input of listInput) {
+                if (!checkInputForm(input)) {
+                    checkForm = false
+                }
+            }
+            if (checkForm) {
+                let checkPass = false
+                const listAccount = JSON.parse(localStorage.getItem('list-account'))
+                const lengthListAccount = listAccount ? listAccount.length : 0
+                if (listAccount) {
+                    for (let i = 0; i < lengthListAccount; i++) {
+                        if (listAccount[i].account === listInput[0].value && listAccount[i].password === listInput[1].value) {
+                            resetForm(listInput)
+                            checkPass = true
+                            modalLogin.style.display = 'none'
+                            localStorage.setItem('user', JSON.stringify({
+                                name: listAccount[i].name,
+                                account: listAccount[i].account
+                            }))
+                            userInfo = {
+                                name: listAccount[i].name,
+                                account: listAccount[i].account
+                            }
+                            location.reload()
+                            break
+                        }
+                    }
+                } else {
+                    showErrorToast('Tên tài khoản hoặc mật khẩu không chính xác')
+                }
+                if (!checkPass) {
+                    resetForm(listInput)
+                    showErrorToast('Tên tài khoản hoặc mật khẩu không chính xác')
+                }
+            }
+            else {
+                showErrorToast('Vui lòng nhập chính xác thông tin')
+            }
+        }
+
+        function checkInputForm(input) {
+            if (!input.value.trim()) {
+                input.style.borderColor = 'red'
+                return false
+            }
+            else {
+                input.style.borderColor = 'transparent'
+                return true
+            }
+        }
+
+        function resetForm(list) {
+            for (let input of list) {
+                input.value = ''
+                input.style.borderColor = 'transparent'
+            }
+        }
+
+        // main
+
+
+    </script>
+    <script type="module" src="./js/render.js"></script>
+
+</body>
+
+</html>
