@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./assets/fonts/fontawesome-free-6.4.2-web/css/all.min.css">
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/productDetail.css">
 
     <title>Cửa hàng hoa</title>
 </head>
@@ -65,12 +66,81 @@
         </div>
     </header>
     <main class="main">
+        <nav class="main-nav">
+            <ul class="main-nav-list">
+                <li class="main-nav-item">
+                    <a href="/">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                <li class="main-nav-item">
+                    <a href="/">
+                        <i class="fa-solid fa-book"></i>
+                        <span>Giới thiệu</span>
+                    </a>
+                </li>
+                <li class="main-nav-item">
+                    <a href="/">
+                        <i class="fa-solid fa-filter"></i>
+                        <span>Sản phẩm</span>
+                    </a>
+                </li>
+                <li class="main-nav-item">
+                    <a href="#footer">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>Liên hệ</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         <div class="main-wrapper">
             <div id="main-content" class="main-content"></div>
         </div>
     </main>
-    <footer class="footer">
-
+    <footer id="footer" class="footer">
+        <div class="footer-wrapper">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h1 class="footer-header">Flower Shop (Nhóm 03)</h1>
+                    <div>
+                        <p><i class="fa-solid fa-location-dot"></i> Địa chỉ: 273 An Dương Vương, Phường 3, Quận 5, TP.
+                            Hồ
+                            Chí
+                            Minh</p>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-envelope"></i> Email:
+                        <a class="communication__link" href="mailto:nguyendinhthongdhsg@gmail.com">
+                            nguyendinhthongdhsg@gmail.com
+                        </a>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-phone"></i> Phone:
+                        <a class="communication__link" href="tel:0123456789">
+                            0123456789
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-support">
+                    <h3 class="footer-header">Hỗ Trợ</h3>
+                    <ul id="footer-support">
+                        <li>> Giới thiệu</li>
+                        <li>> Liên hệ</li>
+                    </ul>
+                </div>
+                <div class="footer-facebook">
+                    <div>
+                        <h3 class="footer-header">Facebook</h3>
+                        <div class="footer-facebook-qr">
+                            <a target="_blank" href="https://www.facebook.com/flower.shop.nhom03/"><img
+                                    src="./assets/images/qrcode.png" alt="Flower Shop" /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="footer-copyright">© Copyright 2023-2024 FLower Shop Team 03.</p>
+        </div>
     </footer>
 
     <!-- Modal login -->
@@ -354,8 +424,10 @@
 
         function checkUserName(userName) {
             const length = userName.length
+            if (!isNaN(userName[0]))
+                return false
             for (let i = 0; i < length; i++) {
-                if (userName[i] === ' ' || !isNaN(userName[i])) {
+                if (userName[i] === ' ') {
                     return false
                 }
             }
