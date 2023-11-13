@@ -29,6 +29,7 @@ html {
 body {
     font-size: 1.6rem;
     color: #333;
+    background-color: #fff;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
 }

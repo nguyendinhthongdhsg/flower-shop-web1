@@ -1,8 +1,11 @@
 import { formatPrice } from "./format.js";
 import jsondb from "./json.js";
 import { redirect } from "./redirect.js";
+import paginationRedir from "./pagination.js";
 
 let json = jsondb();
+
+let paginationIndex = 0
 
 function render() {
     const mainContent = document.getElementById('main-content')
@@ -16,6 +19,7 @@ function render() {
     let html = getDataFlower('hoabo', 'Hoa bó')
     mainContent.innerHTML = html
     html += getDataFlower('binhhoa', 'Bình Hoa')
+
     mainContent.innerHTML = html
     mapItemProduct()
 }
@@ -37,9 +41,10 @@ function mapItemProduct() {
 function getDataFlower(dir, header) {
     let html = `<div class="main-item"><h2>${header}</h2>`
     let item = ''
-    let length = json[dir].length
-    for (let i = 0; i < length; i++) {
-        item += `
+    const length = json[dir].length
+    for (let i = 0; i < 8; i++) {
+        if (json[dir][i]) {
+            item += `
             <li>
                 <div class="item-redirect" data-name="${json[dir][i].name}" data-dir="${dir}" image="${json[dir][i].id}"  data-price="${json[dir][i].price}">
                     <img src="./assets/images/${json[dir][i].id}.jpg" alt="hinh"/>
@@ -47,11 +52,31 @@ function getDataFlower(dir, header) {
                     <p>${formatPrice(json[dir][i].price, 'đ')}</p>
                 </div>
             </li>`
+        }
     }
     html += '<ul class="main-list">' + item + '</ul></div>'
+    html += `
+        <div class="main-pagination">
+            <ul class="pagination-list">`
+
+    for (let i = 1; i <= Math.ceil(length / 8); i++) {
+        html += `<li dir-data="${dir}" index="${paginationIndex}">${i}</li>`
+    }
+    paginationIndex++
+    html += `</ul>
+            </div>`
+
     return html
 }
 
 
 
 render()
+
+const paginationList = document.querySelectorAll('.pagination-list>li')
+for (let x of paginationList) {
+    x.onclick = (e) => {
+        const item = e.target
+        paginationRedir(json[item.getAttribute('dir-data')], parseInt(item.getAttribute('index')), parseInt(item.textContent))
+    }
+}

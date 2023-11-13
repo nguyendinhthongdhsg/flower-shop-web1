@@ -30,6 +30,36 @@ export default function json() {
                 id: 'hoabo_6',
                 name: 'Fragrant Whispers',
                 price: 4400000
+            },
+            {
+                id: 'hoabo_7',
+                name: 'Fragrant Whispers',
+                price: 4400000
+            },
+            {
+                id: 'hoabo_8',
+                name: 'Fragrant Whispers',
+                price: 4400000
+            },
+            {
+                id: 'hoabo_9',
+                name: 'Fragrant Whispers',
+                price: 4400000
+            },
+            {
+                id: 'hoabo_10',
+                name: 'Fragrant Whispers',
+                price: 4400000
+            },
+            {
+                id: 'hoabo_11',
+                name: 'Fragrant Whispers',
+                price: 4400000
+            },
+            {
+                id: 'hoabo_12',
+                name: 'Fragrant Whispers',
+                price: 4400000
             }
         ],
         binhhoa: [

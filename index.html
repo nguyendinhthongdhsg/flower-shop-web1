@@ -30,30 +30,33 @@
                     <div class="head_filter">Lọc theo:</div>
                     <div class="typeFlower_filter">
                         <ul id="typeFlower_filter">
-                            <li id="typeFlower_filter_li" onclick="handlerShowListTypeFlower('first_li')">
+                            <li id="typeFlower_filter_li" typeFlower='first_li'>
                                 <span>Loại hoa</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </li>
-                            <li onclick="handlerShowListTypeFlower('Hoa bó')">Hoa bó</li>
-                            <li onclick="handlerShowListTypeFlower('Bình hoa')">Bình hoa</li>
-                            <li onclick="handlerShowListTypeFlower('Giỏ hoa')">Giỏ hoa</li>
-                            <li onclick="handlerShowListTypeFlower('Hộp hoa')">Hộp hoa</li>
-                            <li onclick="handlerShowListTypeFlower('Hoa cưới')">Hoa cưới</li>
-                            <li onclick="handlerShowListTypeFlower('Hoa Tulip')">Hoa Tulip</li>
-                            <li onclick="handlerShowListTypeFlower('Lan Hồ Điệp')">Lan Hồ Điệp</li>
-                            <li onclick="handlerShowListTypeFlower('Hoa Mẫu Đơn')">Hoa Mẫu Đơn</li>
+                            <li typeFlower='Hoa bó' typeData='hoabo'>Hoa bó</li>
+                            <li typeFlower='Bình hoa' typeData='binhhoa'>Bình hoa</li>
+                            <li typeFlower='Giỏ hoa' typeData='giohoa'>Giỏ hoa</li>
                         </ul>
                     </div>
                     <div class="typeFlower_filter priceFlower_filter">
                         <ul id="priceFlower_filter">
-                            <li id="priceFlower_filter_li" onclick="handlerShowListPriceFlower('first_li')">
+                            <li id="priceFlower_filter_li" textPrice='first_li'>
                                 <span>Giá</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </li>
-                            <li onclick="handlerShowListPriceFlower('Trên 6 triệu đồng')">Trên 6 triệu đồng</li>
-                            <li onclick="handlerShowListPriceFlower('Từ 4 đến 6 triệu đồng')">Từ 4 đến 6 triệu đồng</li>
-                            <li onclick="handlerShowListPriceFlower('Từ 2 đến 4 triệu đồng')">Từ 2 đến 4 triệu đồng</li>
-                            <li onclick="handlerShowListPriceFlower('Dưới 2 triệu đồng')">Dưới 2 triệu đồng</li>
+                            <li textPrice='Trên 6 triệu đồng' price='>6'>Trên
+                                6 triệu đồng
+                            </li>
+                            <li textPrice='Từ 4 đến 6 triệu đồng' price='4-6'>
+                                Từ 4 đến 6
+                                triệu đồng</li>
+                            <li textPrice='Từ 2 đến 4 triệu đồng' price='2-4'>
+                                Từ 2 đến 4
+                                triệu đồng</li>
+                            <li textPrice='Dưới 2 triệu đồng' price='<2'>Dưới
+                                2 triệu đồng
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -143,6 +146,13 @@
         </div>
     </footer>
 
+    <div id="cart-btn" class="cart-wrapper">
+        <div class="cart-content" onclick="showListCart()"><i class="fa-solid fa-cart-shopping"></i></div>
+    </div>
+    <div id="cart" class="cart-modal">
+        <div id="cart-list" class="cart-list"></div>
+    </div>
+
     <!-- Modal login -->
     <div id="modal-login" class="modal">
         <div id="modal-wrapper" class="modal-wrapper">
@@ -221,7 +231,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a onclick="showListCart()">
                                         Giỏ hàng
                                     </a>
                                 </li>
@@ -234,6 +244,7 @@
                             </ul>
                         </nav>`
         }
+
 
         // Toast
         function showSuccessToast(text) {
@@ -253,28 +264,6 @@
         }
 
         const toastContent = document.getElementById('toast')
-
-        // Filter
-        const typeFlower = document.getElementById('typeFlower_filter')
-        const textTypeFlower = document.querySelector('#typeFlower_filter_li>span')
-
-        const priceFlower = document.getElementById('priceFlower_filter')
-        const textPriceFlower = document.querySelector('#priceFlower_filter_li>span')
-
-        function handlerShowListTypeFlower(event) {
-            if (event !== 'first_li') {
-                textTypeFlower.textContent = event
-            }
-            typeFlower.classList.toggle('open')
-        }
-
-        function handlerShowListPriceFlower(event) {
-            if (event !== 'first_li') {
-                textPriceFlower.textContent = event
-            }
-            priceFlower.classList.toggle('open')
-        }
-
 
         // Login Register
         const modalLogin = document.getElementById('modal-login')
@@ -500,9 +489,86 @@
 
         // main
 
+        const cartBtn = document.getElementById('cart-btn')
+        const cart = document.getElementById('cart')
+        const cartList = document.getElementById('cart-list')
+
+        function showListCart() {
+            if (userInfo) {
+                let html =
+                    `<div class="cart-list-content">
+                        <ul class="cart-list-nav">
+                            <li>
+                                Sản phẩm
+                            </li>    
+                            <li>
+                                Đang xử lý
+                            </li>
+                            <li>
+                                Đã xong
+                            </li>
+                        </ul>
+                        <h2 class="cart-list-header">Giỏ hàng</h2>
+                        <ul class="cart-list-product">    
+                    `
+                const listCart = JSON.parse(localStorage.getItem('listCart-' + userInfo.account))
+                let item = ''
+                for (let x of listCart) {
+                    item += `
+                        <li>
+                            <img src="./assets/images/${x.image}.jpg" alt="hinh"/>
+                            <h4>
+                                ${x.name}
+                            </h4>
+                            <p>
+                                ${formatPrice(x.price, 'đ')}    
+                            </p>
+                            <button>+</button>
+                            <span>${x.length}</span>
+                            <button>-</button>
+                            <input placeholder="1" type="checkbox" />
+                        </li>
+                    `
+                }
+                html = html + item + `</ul></div>`
+                cartList.innerHTML = html
+                const btnAdd = document.querySelectorAll('.cart-list-product>li>button')
+                const quantity = document.querySelectorAll('.cart-list-product>li>span')
+                const lengthBtn = btnAdd.length
+                for (let i = 0; i < lengthBtn; i++) {
+                    btnAdd[i].onclick = (e) => handlerQuantityProduct(e.target.textContent, quantity[Math.floor(i / 2)])
+                }
+                cart.style.display = 'flex'
+            }
+            else {
+                handlerShowModal()
+            }
+        }
+
+        cart.onclick = (e) => handlerCloseCart(e.target)
+
+        function handlerCloseCart(event) {
+            if (event.getAttribute('id') === 'cart') {
+                event.style.display = 'none'
+            }
+        }
+
+        function handlerQuantityProduct(option, quantity) {
+            if (option === '+') {
+                quantity.innerText = parseInt(quantity.textContent) + 1
+            }
+            else if (parseInt(quantity.textContent) > 1)
+                quantity.innerText = parseInt(quantity.textContent) - 1
+        }
+
+        function formatPrice(n, currency) {
+            const nFormat = new Intl.NumberFormat();
+            return nFormat.format(n) + ' ' + currency;
+        }
 
     </script>
     <script type="module" src="./js/render.js"></script>
+    <script type="module" src="./js/filter.js"></script>
 
 </body>
 
