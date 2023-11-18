@@ -41,7 +41,6 @@ for (let x of priceFlowerList) {
             textPrice: item.getAttribute('textPrice'),
             price: item.getAttribute('price')
         }
-        console.log(event.price, [item])
         handlerShowListPriceFlower(event)
     }
 }
@@ -192,7 +191,7 @@ function handlerRenderPrice(option) {
     renderWithFilter(listPr)
 }
 
-function renderWithFilter(data) {
+export function renderWithFilter(data) {
 
     const mainContent = document.getElementById('main-content')
     if (!data[0]) {
@@ -207,7 +206,7 @@ function renderWithFilter(data) {
             item += `
                     <li>
                         <div class="item-redirect" data-name="${data[i].name}" image="${data[i].id}"  data-price="${data[i].price}">
-                            <img src="./assets/images/${data[i].id}.jpg" alt="hinh"/>
+                            <img src="${data[i].image}" alt="hinh"/>
                             <h3>${data[i].name}</h3>
                             <p>${formatPrice(data[i].price, 'đ')}</p>
                         </div>
@@ -224,6 +223,7 @@ function renderWithFilter(data) {
     html += `</ul>
             </div>`
     mainContent.innerHTML = html
+    localStorage.setItem('data-ing', JSON.stringify(data))
     mapItemProduct()
     window.scrollTo(top)
     const paginationList = document.querySelectorAll('.pagination-list>li')

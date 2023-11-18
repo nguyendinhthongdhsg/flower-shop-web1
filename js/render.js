@@ -46,8 +46,8 @@ function getDataFlower(dir, header) {
         if (json[dir][i]) {
             item += `
             <li>
-                <div class="item-redirect" data-name="${json[dir][i].name}" data-dir="${dir}" image="${json[dir][i].id}"  data-price="${json[dir][i].price}">
-                    <img src="./assets/images/${json[dir][i].id}.jpg" alt="hinh"/>
+                <div class="item-redirect" data-name="${json[dir][i].name}" data-dir="${dir}" image="${json[dir][i].image}"  data-price="${json[dir][i].price}">
+                    <img src="${json[dir][i].image}" alt="hinh"/>
                     <h3>${json[dir][i].name}</h3>
                     <p>${formatPrice(json[dir][i].price, 'đ')}</p>
                 </div>
@@ -72,6 +72,7 @@ function getDataFlower(dir, header) {
 
 
 render()
+localStorage.removeItem('data-ing')
 
 const paginationList = document.querySelectorAll('.pagination-list>li')
 for (let x of paginationList) {

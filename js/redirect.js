@@ -13,7 +13,7 @@ export function redirect(data) {
     const html = `<div class="product-detail">
         <div class="product-detail-content">
             <div class="product-detail-img">
-                <img src="./assets/images/${data.image}.jpg" alt="${data.name}" />
+                <img src="${data.image}" alt="${data.name}" />
             </div>
             <div class="product-detail-info">
                 <h3>${data.name}</h3>

@@ -20,7 +20,7 @@
         </div>
         <div class="tasks">
             <div class="search">
-                <form class="search_form">
+                <form id="search_form" class="search_form">
                     <input type="search" placeholder="Tìm kiếm" name="search" autocomplete="off" spellcheck="false" />
                     <button type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -240,6 +240,11 @@
                                         Giới thiệu
                                     </a>
                                 </li>
+                                ${userInfo.account === 'admin' ? `<li>
+                                        <a href="/admin/admin.html">
+                                            Admin
+                                        </a>
+                                    </li>` : ''}
                                 <li class="user-item-logout" onclick="logout()">Đăng xuất</li>
                             </ul>
                         </nav>`
@@ -306,6 +311,12 @@
                 if (!checkInputForm(input)) {
                     checkForm = false
                 }
+            }
+            if (listInput[1].value.trim() == 'admin') {
+                showErrorToast('Tên đăng nhập đã tồn tại')
+                listInput[1].value = ''
+                listInput[1].style.borderColor = 'red'
+                return;
             }
             if (checkForm) {
                 const listAccount = JSON.parse(localStorage.getItem('list-account'))
@@ -435,6 +446,17 @@
                 }
             }
             if (checkForm) {
+                if (listInput[0].value.trim() == 'admin' && listInput[1].value.trim() == 'admin') {
+                    localStorage.setItem('user', JSON.stringify({
+                        name: listInput[0].value,
+                        account: listInput[0].value,
+                        admin: true
+                    }))
+                    window.location.href = '/admin/admin.html'
+                    return;
+                }
+            }
+            if (checkForm) {
                 let checkPass = false
                 const listAccount = JSON.parse(localStorage.getItem('list-account'))
                 const lengthListAccount = listAccount ? listAccount.length : 0
@@ -493,10 +515,9 @@
         const cart = document.getElementById('cart')
         const cartList = document.getElementById('cart-list')
 
-        function showListCart() {
-            if (userInfo) {
-                let html =
-                    `<div class="cart-list-content">
+        function showListCartAdd() {
+            let html =
+                `<div class="cart-list-content">
                         <ul class="cart-list-nav">
                             <li>
                                 Sản phẩm
@@ -511,33 +532,187 @@
                         <h2 class="cart-list-header">Giỏ hàng</h2>
                         <ul class="cart-list-product">    
                     `
-                const listCart = JSON.parse(localStorage.getItem('listCart-' + userInfo.account))
-                let item = ''
-                for (let x of listCart) {
+            const listCart = JSON.parse(localStorage.getItem('listCart-' + userInfo.account))
+            let item = ''
+            if (listCart && listCart[0]) {
+                const length = listCart.length
+                for (let i = 0; i < length; i++) {
                     item += `
                         <li>
-                            <img src="./assets/images/${x.image}.jpg" alt="hinh"/>
+                            <img src="${listCart[i].image}" alt="hinh"/>
                             <h4>
-                                ${x.name}
+                                ${listCart[i].name}
                             </h4>
                             <p>
-                                ${formatPrice(x.price, 'đ')}    
+                                ${formatPrice(listCart[i].price, 'đ')}    
                             </p>
                             <button>+</button>
-                            <span>${x.length}</span>
+                            <span>${listCart[i].length}</span>
                             <button>-</button>
-                            <input placeholder="1" type="checkbox" />
+                            <input placeholder="1" type="checkbox" index="${i}" />
                         </li>
                     `
                 }
-                html = html + item + `</ul></div>`
-                cartList.innerHTML = html
-                const btnAdd = document.querySelectorAll('.cart-list-product>li>button')
-                const quantity = document.querySelectorAll('.cart-list-product>li>span')
-                const lengthBtn = btnAdd.length
-                for (let i = 0; i < lengthBtn; i++) {
-                    btnAdd[i].onclick = (e) => handlerQuantityProduct(e.target.textContent, quantity[Math.floor(i / 2)])
+            }
+            else {
+                item = `<li style="justify-content: center;">Chưa có sản phẩm nào trong giỏ hàng</li>`
+            }
+            html = html + item + `</ul>
+                <div class="cart-list-btnBuy">
+                    <button class="cart-list-btnBuy-delete">Xóa</button>
+                    <button>Đặt hàng</button>
+                </div>
+            </div>`
+            cartList.innerHTML = html
+
+            const listNav = document.querySelectorAll('.cart-list-nav>li')
+            listNav[0].onclick = (e) => showListCartAdd()
+            listNav[1].onclick = (e) => showListCartIng()
+            listNav[2].onclick = (e) => showListCartEd()
+
+            const btnAdd = document.querySelectorAll('.cart-list-product>li>button')
+            const quantity = document.querySelectorAll('.cart-list-product>li>span')
+            const lengthBtn = btnAdd.length
+            for (let i = 0; i < lengthBtn; i++) {
+                btnAdd[i].onclick = (e) => handlerQuantityProduct(e.target.textContent, quantity[Math.floor(i / 2)])
+            }
+            const btnBuy = document.querySelectorAll('.cart-list-btnBuy>button')
+            btnBuy[0].onclick = (e) => {
+                const checkBoxs = document.querySelectorAll('.cart-list-product>li>input:checked')
+                const length = checkBoxs.length
+                for (let i = 0; i < length; i++) {
+                    if (i == 0) {
+                        listCart.splice(parseInt(checkBoxs[i].getAttribute('index')), 1)
+                    }
+                    else {
+                        listCart.splice(parseInt(checkBoxs[i].getAttribute('index')) - i, 1)
+                    }
                 }
+                localStorage.setItem('listCart-' + userInfo.account, JSON.stringify(listCart))
+                showListCartAdd()
+            }
+            btnBuy[1].onclick = (e) => {
+                const checkBoxs = document.querySelectorAll('.cart-list-product>li>input:checked')
+                let listCartIng = JSON.parse(localStorage.getItem('listCarting-' + userInfo.account))
+                if (listCartIng && listCartIng[0]) {
+                    for (let checkBox of checkBoxs) {
+                        listCart[parseInt(checkBox.getAttribute('index'))].length = parseInt(quantity[parseInt(checkBox.getAttribute('index'))].textContent)
+                        listCartIng.push({
+                            ...listCart[parseInt(checkBox.getAttribute('index'))],
+                            data: ''
+                        })
+                    }
+                }
+                else {
+                    listCartIng = []
+                    for (let checkBox of checkBoxs) {
+                        listCartIng.push({
+                            ...listCart[parseInt(checkBox.getAttribute('index'))],
+                            date: ''
+                        })
+                    }
+                }
+
+                localStorage.setItem('listCarting-' + userInfo.account, JSON.stringify(listCartIng))
+                btnBuy[0].click()
+            }
+        }
+
+        function showListCartIng() {
+            let html =
+                `<div class="cart-list-content">
+                        <ul class="cart-list-nav">
+                            <li>
+                                Sản phẩm
+                            </li>    
+                            <li>
+                                Đang xử lý
+                            </li>
+                            <li>
+                                Đã xong
+                            </li>
+                        </ul>
+                        <h2 class="cart-list-header">Đang xử lý</h2>
+                        <ul class="cart-list-product">`
+            const listCart = JSON.parse(localStorage.getItem('listCarting-' + userInfo.account))
+            let item = ''
+            if (listCart && listCart[0]) {
+                const length = listCart.length
+                for (let i = 0; i < length; i++) {
+                    item += `
+                        <li>
+                            <img src="${listCart[i].image}" alt="hinh"/>
+                            <h4>
+                                ${listCart[i].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listCart[i].price, 'đ')}    
+                            </p>
+                            <span style="margin-right: 20px;">${listCart[i].length}</span>
+                        </li>
+                `
+                }
+            }
+            else {
+                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đang xử lý</li> `
+            }
+            html = html + item + `</ul ></div> `
+            cartList.innerHTML = html
+            const listNav = document.querySelectorAll('.cart-list-nav>li')
+            listNav[0].onclick = (e) => showListCartAdd()
+            listNav[1].onclick = (e) => showListCartIng()
+            listNav[2].onclick = (e) => showListCartEd()
+        }
+
+        function showListCartEd() {
+            let html =
+                `<div class="cart-list-content">
+                        <ul class="cart-list-nav">
+                            <li>
+                                Sản phẩm
+                            </li>    
+                            <li>
+                                Đang xử lý
+                            </li>
+                            <li>
+                                Đã xong
+                            </li>
+                        </ul>
+                        <h2 class="cart-list-header">Đã xong</h2>
+                        <ul class="cart-list-product">`
+            const listCart = JSON.parse(localStorage.getItem('listCarted-' + userInfo.account))
+            let item = ''
+            if (listCart && listCart[0]) {
+                const length = listCart.length
+                for (let i = 0; i < length; i++) {
+                    item += `
+                        <li>
+                            <img src="./assets/images/${listCart[i].image}.jpg" alt="hinh"/>
+                            <h4>
+                                ${listCart[i].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listCart[i].price, 'đ')}    
+                            </p>
+                            <span style="margin-right: 20px;">${listCart[i].length}</span>
+                        </li>
+                `
+                }
+            }
+            else {
+                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đã xong</li>`
+            }
+            html = html + item + `</ul ></div>`
+            cartList.innerHTML = html
+            const listNav = document.querySelectorAll('.cart-list-nav>li')
+            listNav[0].onclick = (e) => showListCartAdd()
+            listNav[1].onclick = (e) => showListCartIng()
+            listNav[2].onclick = (e) => showListCartEd()
+        }
+
+        function showListCart() {
+            if (userInfo) {
+                showListCartAdd()
                 cart.style.display = 'flex'
             }
             else {
@@ -569,6 +744,7 @@
     </script>
     <script type="module" src="./js/render.js"></script>
     <script type="module" src="./js/filter.js"></script>
+    <script type="module" src="./js/search.js"></script>
 
 </body>
 
