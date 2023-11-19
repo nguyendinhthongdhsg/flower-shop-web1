@@ -119,6 +119,10 @@ function handlerRenderPrice(option) {
                     if (x.price > 6000000)
                         listPr.push(x)
                 }
+                for (let x of data.giohoa) {
+                    if (x.price > 6000000)
+                        listPr.push(x)
+                }
                 break
 
             case '4-6':
@@ -127,6 +131,10 @@ function handlerRenderPrice(option) {
                         listPr.push(x)
                 }
                 for (let x of data.binhhoa) {
+                    if (x.price > 4000000 && x.price <= 6000000)
+                        listPr.push(x)
+                }
+                for (let x of data.giohoa) {
                     if (x.price > 4000000 && x.price <= 6000000)
                         listPr.push(x)
                 }
@@ -140,6 +148,10 @@ function handlerRenderPrice(option) {
                     if (x.price > 2000000 && x.price <= 4000000)
                         listPr.push(x)
                 }
+                for (let x of data.giohoa) {
+                    if (x.price > 2000000 && x.price <= 4000000)
+                        listPr.push(x)
+                }
                 break
 
             case '<2':
@@ -148,6 +160,10 @@ function handlerRenderPrice(option) {
                         listPr.push(x)
                 }
                 for (let x of data.binhhoa) {
+                    if (x.price <= 2000000)
+                        listPr.push(x)
+                }
+                for (let x of data.giohoa) {
                     if (x.price <= 2000000)
                         listPr.push(x)
                 }

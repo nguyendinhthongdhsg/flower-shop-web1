@@ -19,7 +19,8 @@ function render() {
     let html = getDataFlower('hoabo', 'Hoa bó')
     mainContent.innerHTML = html
     html += getDataFlower('binhhoa', 'Bình Hoa')
-
+    mainContent.innerHTML = html
+    html += getDataFlower('giohoa', 'Giỏ Hoa')
     mainContent.innerHTML = html
     mapItemProduct()
 }

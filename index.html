@@ -594,26 +594,52 @@
             btnBuy[1].onclick = (e) => {
                 const checkBoxs = document.querySelectorAll('.cart-list-product>li>input:checked')
                 let listCartIng = JSON.parse(localStorage.getItem('listCarting-' + userInfo.account))
+                const d = new Date()
                 if (listCartIng && listCartIng[0]) {
+                    const cartIng = []
+                    let totalPrice = 0
+                    let totalLength = 0
                     for (let checkBox of checkBoxs) {
                         listCart[parseInt(checkBox.getAttribute('index'))].length = parseInt(quantity[parseInt(checkBox.getAttribute('index'))].textContent)
-                        listCartIng.push({
-                            ...listCart[parseInt(checkBox.getAttribute('index'))],
-                            data: ''
-                        })
+                        cartIng.push(listCart[parseInt(checkBox.getAttribute('index'))])
+                        totalPrice += listCart[parseInt(checkBox.getAttribute('index'))].price * listCart[parseInt(checkBox.getAttribute('index'))].length
+                        totalLength += listCart[parseInt(checkBox.getAttribute('index'))].length
                     }
+                    listCartIng.push({
+                        id: `${d.getDate()}${d.getHours()}${d.getMinutes()}${d.getSeconds()}${Math.floor(Math.random() * 10000)}`,
+                        listPr: cartIng,
+                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+                        totalPrice,
+                        totalLength
+                    })
                 }
                 else {
                     listCartIng = []
+                    const cartIng = []
+                    let totalPrice = 0
+                    let totalLength = 0
                     for (let checkBox of checkBoxs) {
-                        listCartIng.push({
-                            ...listCart[parseInt(checkBox.getAttribute('index'))],
-                            date: ''
-                        })
+                        listCart[parseInt(checkBox.getAttribute('index'))].length = parseInt(quantity[parseInt(checkBox.getAttribute('index'))].textContent)
+                        cartIng.push(listCart[parseInt(checkBox.getAttribute('index'))])
+                        totalPrice += listCart[parseInt(checkBox.getAttribute('index'))].price * listCart[parseInt(checkBox.getAttribute('index'))].length
+                        totalLength += listCart[parseInt(checkBox.getAttribute('index'))].length
                     }
+                    listCartIng.push({
+                        id: `${d.getDate()}${d.getHours()}${d.getMinutes()}${d.getSeconds()}${Math.floor(Math.random() * 10000)}`,
+                        listPr: cartIng,
+                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+                        totalPrice,
+                        totalLength
+                    })
                 }
 
-                localStorage.setItem('listCarting-' + userInfo.account, JSON.stringify(listCartIng))
+                if (listCartIng && listCartIng[0].listPr[0]) {
+                    localStorage.setItem('listCarting-' + userInfo.account, JSON.stringify(listCartIng))
+                    const listCarted = JSON.parse(localStorage.getItem('listCarted-' + userInfo.account))
+                    if (!listCarted) {
+                        localStorage.setItem('listCarted-' + userInfo.account, JSON.stringify([]))
+                    }
+                }
                 btnBuy[0].click()
             }
         }
@@ -621,6 +647,7 @@
         function showListCartIng() {
             let html =
                 `<div class="cart-list-content">
+                    <div class="modal-cart-list-ing-ed"></div>
                         <ul class="cart-list-nav">
                             <li>
                                 Sản phẩm
@@ -641,14 +668,11 @@
                 for (let i = 0; i < length; i++) {
                     item += `
                         <li>
-                            <img src="${listCart[i].image}" alt="hinh"/>
-                            <h4>
-                                ${listCart[i].name}
-                            </h4>
-                            <p>
-                                ${formatPrice(listCart[i].price, 'đ')}    
-                            </p>
-                            <span style="margin-right: 20px;">${listCart[i].length}</span>
+                            <p style="color: #333;">Mã đơn: ${listCart[i].id}</p>
+                            <p style="color: #333;">Ngày đặt: ${listCart[i].date}</p>
+                            <p style="color: #333;">Tổng tiền: ${formatPrice(listCart[i].totalPrice, 'đ')}</p>
+                            <p style="color: #333;">Số lượng sản phẩm: ${listCart[i].totalLength}</p>
+                            <p style="color: blue; text-decoration: underline;flex: 0.3; cursor: pointer;" index="${i}">Xem thêm</p>
                         </li>
                 `
                 }
@@ -658,6 +682,51 @@
             }
             html = html + item + `</ul ></div> `
             cartList.innerHTML = html
+            const xemThems = document.querySelectorAll('.cart-list-product>li>p:last-child')
+            for (let xemThem of xemThems) {
+                xemThem.onclick = (e) => {
+                    const event = e.target
+                    const i = parseInt(event.getAttribute('index'))
+                    let html = `
+                    <div>
+                        <h3>Chi tiết</h3>
+                        <div>
+                            <p style="color: #333;">Mã đơn: ${listCart[i].id}</p>
+                            <p style="color: #333;">Ngày đặt: ${listCart[i].date}</p>
+                            <p style="color: #333;">Tổng tiền: ${formatPrice(listCart[i].totalPrice, 'đ')}</p>
+                            <p style="color: #333;">Số lượng sản phẩm: ${listCart[i].totalLength}</p>
+                        </div>
+                        <ul>
+                    `
+                    for (let index = 0; index < listCart[i].listPr.length; index++) {
+                        html += `
+                        <li>
+                            <img src="${listCart[i].listPr[index].image}" alt="hinh"/>
+                            <h4>
+                                ${listCart[i].listPr[index].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listCart[i].listPr[index].price, 'đ')}    
+                            </p>
+                            <span>${listCart[i].listPr[index].length}</span>
+                        </li>
+                    `
+                    }
+
+                    html += `</ul></div>`
+                    const modal = document.querySelector('.modal-cart-list-ing-ed')
+                    modal.innerHTML = html
+                    modal.style.display = 'flex'
+                    modal.onclick = (e) => {
+                        let event = e.target
+                        while (event.classList[0] != 'modal-cart-list-ing-ed')
+                            event = event.parentElement
+                        if (event) {
+                            event.style.display = 'none'
+                        }
+                    }
+                }
+            }
             const listNav = document.querySelectorAll('.cart-list-nav>li')
             listNav[0].onclick = (e) => showListCartAdd()
             listNav[1].onclick = (e) => showListCartIng()
@@ -667,6 +736,7 @@
         function showListCartEd() {
             let html =
                 `<div class="cart-list-content">
+                    <div class="modal-cart-list-ing-ed"></div>
                         <ul class="cart-list-nav">
                             <li>
                                 Sản phẩm
@@ -678,7 +748,7 @@
                                 Đã xong
                             </li>
                         </ul>
-                        <h2 class="cart-list-header">Đã xong</h2>
+                        <h2 class="cart-list-header">Đã xử xong</h2>
                         <ul class="cart-list-product">`
             const listCart = JSON.parse(localStorage.getItem('listCarted-' + userInfo.account))
             let item = ''
@@ -687,23 +757,65 @@
                 for (let i = 0; i < length; i++) {
                     item += `
                         <li>
-                            <img src="./assets/images/${listCart[i].image}.jpg" alt="hinh"/>
-                            <h4>
-                                ${listCart[i].name}
-                            </h4>
-                            <p>
-                                ${formatPrice(listCart[i].price, 'đ')}    
-                            </p>
-                            <span style="margin-right: 20px;">${listCart[i].length}</span>
+                            <p style="color: #333;">Mã đơn: ${listCart[i].id}</p>
+                            <p style="color: #333;">Ngày đặt: ${listCart[i].date}</p>
+                            <p style="color: #333;">Tổng tiền: ${formatPrice(listCart[i].totalPrice, 'đ')}</p>
+                            <p style="color: #333;">Số lượng sản phẩm: ${listCart[i].totalLength}</p>
+                            <p style="color: blue; text-decoration: underline;flex: 0.3; cursor: pointer;" index="${i}">Xem thêm</p>
                         </li>
                 `
                 }
             }
             else {
-                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đã xong</li>`
+                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đã xử xong</li> `
             }
-            html = html + item + `</ul ></div>`
+            html = html + item + `</ul ></div> `
             cartList.innerHTML = html
+            const xemThems = document.querySelectorAll('.cart-list-product>li>p:last-child')
+            for (let xemThem of xemThems) {
+                xemThem.onclick = (e) => {
+                    const event = e.target
+                    const i = parseInt(event.getAttribute('index'))
+                    let html = `
+                    <div>
+                        <h3>Chi tiết</h3>
+                        <div>
+                            <p style="color: #333;">Mã đơn: ${listCart[i].id}</p>
+                            <p style="color: #333;">Ngày đặt: ${listCart[i].date}</p>
+                            <p style="color: #333;">Tổng tiền: ${formatPrice(listCart[i].totalPrice, 'đ')}</p>
+                            <p style="color: #333;">Số lượng sản phẩm: ${listCart[i].totalLength}</p>
+                        </div>
+                        <ul>
+                    `
+                    for (let index = 0; index < listCart[i].listPr.length; index++) {
+                        html += `
+                        <li>
+                            <img src="${listCart[i].listPr[index].image}" alt="hinh"/>
+                            <h4>
+                                ${listCart[i].listPr[index].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listCart[i].listPr[index].price, 'đ')}    
+                            </p>
+                            <span>${listCart[i].listPr[index].length}</span>
+                        </li>
+                    `
+                    }
+
+                    html += `</ul></div>`
+                    const modal = document.querySelector('.modal-cart-list-ing-ed')
+                    modal.innerHTML = html
+                    modal.style.display = 'flex'
+                    modal.onclick = (e) => {
+                        let event = e.target
+                        while (event.classList[0] != 'modal-cart-list-ing-ed')
+                            event = event.parentElement
+                        if (event) {
+                            event.style.display = 'none'
+                        }
+                    }
+                }
+            }
             const listNav = document.querySelectorAll('.cart-list-nav>li')
             listNav[0].onclick = (e) => showListCartAdd()
             listNav[1].onclick = (e) => showListCartIng()
