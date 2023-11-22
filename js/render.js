@@ -9,14 +9,38 @@ let paginationIndex = 0
 
 function render() {
     const mainContent = document.getElementById('main-content')
+        var slider=`        <div id="slider-div">
+    <div class="slider">
+        <div class="slides" >
+            <input type="radio" name="radio-btn" id="radio1">
+            <input type="radio" name="radio-btn" id="radio2">
+            <input type="radio" name="radio-btn" id="radio3">
 
+            <div class="slide first">
+                <img src="assets/images/slider1.jpg">
+            </div>
+            <div class="slide">
+                <img src="assets/images/slider2.jpg">
+            </div>
+            <div class="slide">
+                <img src="assets/images/slider3.jpg">
+            </div>
+        </div> 
+        <div class="navi-manual">
+            <label for="radio1" class="manual-btn"></label>
+            <label for="radio2" class="manual-btn"></label>
+            <label for="radio3" class="manual-btn"></label>
+        </div> 
+    </div>
+</div>`
     if (localStorage.getItem('data')) {
         json = JSON.parse(localStorage.getItem('data'))
     }
     else {
         localStorage.setItem('data', JSON.stringify(json))
     }
-    let html = getDataFlower('hoabo', 'Hoa bó')
+    let html = slider;
+    html += getDataFlower('hoabo', 'Hoa bó')
     mainContent.innerHTML = html
     html += getDataFlower('binhhoa', 'Bình Hoa')
     mainContent.innerHTML = html
