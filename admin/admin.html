@@ -43,7 +43,7 @@
             <div onclick="showListEd()">
                 Đơn hàng đã xử lý
             </div>
-            <div onclick="showListIng()">
+            <div onclick="showStatistic()">
                 Thống kê
             </div>
         </nav>
@@ -338,6 +338,7 @@
                 if (list && list[0]) {
                     for (let i = 0; i < list.length; i++) {
                         listIng.push({
+                            index: i,
                             name: x.name,
                             account: x.account,
                             ...list[i]
@@ -414,20 +415,21 @@
                         }
                     }
                     const btn = document.querySelectorAll('.admin-content-1-listCart-ing-modal>div>span>button')
+                    const account = listIng[i].account
+                    const listCarting = JSON.parse(localStorage.getItem('listCarting-' + account))
                     btn[0].onclick = (e) => {
-                        const account = listIng[i].account
-                        listIng.splice(i, 1)
-                        localStorage.setItem('listCarting-' + account, JSON.stringify(listIng))
+                        listCarting.splice(listIng.index, 1)
+                        localStorage.setItem('listCarting-' + account, JSON.stringify(listCarting))
                         modal.style = 'none'
                         showListIng()
                     }
                     btn[1].onclick = (e) => {
-                        const cart = listIng[i]
-                        const listEd = JSON.parse(localStorage.getItem('listCarted-' + cart.account))
-                        listIng.splice(i, 1)
-                        listEd.push(cart)
-                        localStorage.setItem('listCarting-' + cart.account, JSON.stringify(listIng))
-                        localStorage.setItem('listCarted-' + cart.account, JSON.stringify(listEd))
+                        const listEd = localStorage.getItem('listCarted-' + account) ?
+                            JSON.parse(localStorage.getItem('listCarted-' + account)) : []
+                        listEd.push(listCarting[listIng[i].index])
+                        listCarting.splice(listIng.index, 1)
+                        localStorage.setItem('listCarting-' + account, JSON.stringify(listCarting))
+                        localStorage.setItem('listCarted-' + account, JSON.stringify(listEd))
                         modal.style = 'none'
                         showListIng()
                     }
@@ -435,6 +437,172 @@
             }
         }
         showListIng()
+
+        function showListEd() {
+            const user = JSON.parse(localStorage.getItem('list-account'))
+            const listEd = []
+            for (let x of user) {
+                const list = JSON.parse(localStorage.getItem('listCarted-' + x.account))
+                if (list && list[0]) {
+                    for (let i = 0; i < list.length; i++) {
+                        listEd.push({
+                            index: i,
+                            name: x.name,
+                            account: x.account,
+                            ...list[i]
+                        })
+                    }
+                }
+            }
+            const content = document.querySelector('.admin-content-1')
+            let html = `
+                <div class="admin-content-1-listCart-ing">
+                    <div class="admin-content-1-listCart-ing-modal"></div>
+                    <h2>Đơn hàng đã xử lý</h2>
+                    <ul>
+            `
+            for (let i = 0; i < listEd.length; i++) {
+                html += `
+                    <li>
+                        <p>Mã đơn: ${listEd[i].id}</p>
+                        <p>Khách hàng: ${listEd[i].name} (${listEd[i].account})</p>
+                        <p>Ngày đặt: ${listEd[i].date}</p>
+                        <p>Tổng tiền: ${formatPrice(listEd[i].totalPrice, 'đ')}</p>
+                        <p>Tổng Sản phẩm: ${listEd[i].totalLength}</p>
+                    </li>
+                `
+            }
+            html += `</ul></div>`
+            content.innerHTML = html
+
+            const detail = document.querySelectorAll('.admin-content-1-listCart-ing>ul>li')
+            for (let i = 0; i < detail.length; i++) {
+                detail[i].onclick = (e) => {
+                    const event = e.target
+                    const modal = document.querySelector('.admin-content-1-listCart-ing-modal')
+                    let html = `
+                        <div>
+                            <h3>Chi tiết</h3>
+                            <div>
+                                <p>Mã đơn: ${listEd[i].id}</p>
+                                <p>Khách hàng: ${listEd[i].name} (${listEd[i].account})</p>
+                                <p>Ngày đặt: ${listEd[i].date}</p>
+                                <p>Tổng tiền: ${formatPrice(listEd[i].totalPrice, 'đ')}</p>
+                                <p>Tổng Sản phẩm: ${listEd[i].totalLength}</p>
+                            </div>
+                        <ul>
+                    `
+                    for (let j = 0; j < listEd[i].listPr.length; j++) {
+                        html += `
+                        <li>
+                            <img src="${listEd[i].listPr[j].image}" alt="hinh"/>
+                            <h4>
+                                ${listEd[i].listPr[j].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listEd[i].listPr[j].price, 'đ')}    
+                            </p>
+                            <span>${listEd[i].listPr[j].length}</span>
+                        </li>
+                        `
+                    }
+                    html += `</ul></div>`
+                    modal.innerHTML = html
+                    modal.style.display = 'flex'
+                    modal.onclick = (e) => {
+                        let event = e.target
+                        while (event.classList[0] != 'admin-content-1-listCart-ing-modal')
+                            event = event.parentElement
+                        if (event) {
+                            event.style.display = 'none'
+                        }
+                    }
+                }
+            }
+        }
+
+        function showStatistic() {
+            const content = document.querySelector('.admin-content-1')
+            let html = `
+                <div class="admin-content-1-Statistic">
+                    <h2>Thống kê</h2>
+                    <form>
+                        <input type="month" name="name" placeholder="Tháng" autocomplete="off" spellcheck="false"/>
+                        <button type="submit">Xem</button>   
+                    </form>
+                    <div></div>
+            `
+            html += `</div>`
+            content.innerHTML = html
+            const listPr = []
+            const userAccount = JSON.parse(localStorage.getItem('list-account'))
+            for (let i = 0; i < userAccount.length; i++) {
+
+                const pr = JSON.parse(localStorage.getItem('listCarted-' + userAccount[i].account))
+                if (pr && pr[0]) {
+                    listPr.push(...pr)
+                }
+            }
+            const form = document.querySelector('.admin-content-1-Statistic>form')
+            form.onsubmit = (e) => {
+                e.preventDefault()
+                const event = e.target
+                const year = event[0].value[0] + event[0].value[1] + event[0].value[2] + event[0].value[3]
+                const month = event[0].value[5] + event[0].value[6]
+                const date = month + '/' + year
+                if (month && year) {
+                    const listContent = []
+                    let totalPrice = 0
+                    let totalLength = 0
+                    for (let i = 0; i < listPr.length; i++) {
+                        if (listPr[i].date.indexOf(date) !== -1) {
+                            totalPrice += listPr[i].totalPrice
+                            totalLength += listPr[i].totalLength
+                            listContent.push(...listPr[i].listPr)
+                        }
+                    }
+                    for (let i = 0; i < listContent.length - 1; i++) {
+                        for (let j = i + 1; j < listContent.length; j++) {
+                            if (listContent[i].name === listContent[j].name) {
+                                listContent[i].length += listContent[j].length
+                                listContent[i].price = parseInt(listContent[i].price) + parseInt(listContent[j].price)
+                                listContent.splice(j, 1)
+                            }
+                        }
+                    }
+                    const info = document.querySelector('.admin-content-1-Statistic>div')
+                    let html = `
+                    <h3>Thống kê tháng ${month}</h3>
+                    <p>Tổng doanh thu: ${formatPrice(totalPrice, 'đ')}</p>
+                    <p>Tổng sản phẩm bán được: ${totalLength}</p>
+                    <ul>
+                `
+                    for (let i = 0; i < listContent.length; i++) {
+                        html += `
+                        <li>
+                            <img src="${listContent[i].image}" alt="hinh"/>
+                            <h4>
+                                ${listContent[i].name}
+                            </h4>
+                            <p>
+                                ${formatPrice(listContent[i].price, 'đ')}    
+                            </p>
+                            <span>${listContent[i].length}</span>
+                        </li>
+                    `
+                    }
+                    html += `<ul>`
+                    info.innerHTML = html
+                }
+                else {
+                    const info = document.querySelector('.admin-content-1-Statistic>div')
+                    const html = `
+                        <p>Vui lòng nhập dữ liệu</p>
+                    `
+                    info.innerHTML = html
+                }
+            }
+        }
 
         function formatPrice(n, currency) {
             const nFormat = new Intl.NumberFormat();

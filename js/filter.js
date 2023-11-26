@@ -221,7 +221,7 @@ export function renderWithFilter(data) {
         if (data[i]) {
             item += `
                     <li>
-                        <div class="item-redirect" data-name="${data[i].name}" image="${data[i].id}"  data-price="${data[i].price}">
+                        <div class="item-redirect" data-name="${data[i].name}" image="${data[i].image}"  data-price="${data[i].price}">
                             <img src="${data[i].image}" alt="hinh"/>
                             <h3>${data[i].name}</h3>
                             <p>${formatPrice(data[i].price, 'đ')}</p>

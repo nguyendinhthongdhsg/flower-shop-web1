@@ -78,13 +78,13 @@
                     </a>
                 </li>
                 <li class="main-nav-item">
-                    <a href="/">
+                    <a onclick="showIntroduce()" style="cursor: pointer;">
                         <i class="fa-solid fa-book"></i>
                         <span>Giới thiệu</span>
                     </a>
                 </li>
                 <li class="main-nav-item">
-                    <a href="/">
+                    <a style="cursor: pointer;" id="main-nav-ViewndividualProducts">
                         <i class="fa-solid fa-filter"></i>
                         <span>Sản phẩm</span>
                     </a>
@@ -151,6 +151,10 @@
     </div>
     <div id="cart" class="cart-modal">
         <div id="cart-list" class="cart-list"></div>
+    </div>
+
+    <div id="scrollToTop" class="scrollToTop" onclick="scrollTopF()">
+        <i class="fa-solid fa-circle-arrow-right"></i>
     </div>
 
     <!-- Modal login -->
@@ -511,9 +515,23 @@
 
         // main
 
+        function showIntroduce() {
+            const main = document.getElementById('main-content')
+            const html = `
+                <div class="main-introduce">
+                    <h2>GIỚI THIỆU</h2>
+                    <p>Flower Shop - Cuộc sống tươi đẹp</p>
+                    <p>Đó là thông điệp mà chúng tôi muốn truyền tải đến bạn, mỗi ngày của bạn hãy luôn rực rỡ, đầy năng lượng và nhiều yêu thương như những bông hoa biết nói.</p>
+                    <p>Tiệm hoa Flower Shop nằm giữa lòng Sài Gòn nhộn nhịp với những mảng tường xanh mát, nắng đan xen qua giàn dây leo lá rũ, tạo một cảm giác bình yên, nhẹ nhàng và gần gũi . Mời bạn ghé thăm ngôi nhà rất thơ này để cùng ngắm nhìn nhiều loại hoa tươi trong nước đến các loại hoa cao cấp nhập khẩu từ Ecuador, Hà Lan, Nam Phi, Nhật Bản… Đội ngũ Team 03 chúng tôi - các bạn trẻ đầy sáng tạo, đam mê và nhiệt huyết với mong muốn tạo được sự gắn kết cảm xúc và lan toả yêu thương qua những bông hoa tươi thắm. Mỗi một sản phẩm hoa hoàn thiện được trao đến tay khách hàng là tất cả sự tận tâm và trân trọng của chúng tôi .</p>
+                </div>
+            `
+            main.innerHTML = html
+        }
+
         const cartBtn = document.getElementById('cart-btn')
         const cart = document.getElementById('cart')
         const cartList = document.getElementById('cart-list')
+
 
         function showListCartAdd() {
             let html =
@@ -608,7 +626,7 @@
                     listCartIng.push({
                         id: `${d.getDate()}${d.getHours()}${d.getMinutes()}${d.getSeconds()}${Math.floor(Math.random() * 10000)}`,
                         listPr: cartIng,
-                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} (${d.getHours()}:${d.getMinutes()}:${d.getSeconds()})`,
                         totalPrice,
                         totalLength
                     })
@@ -627,7 +645,7 @@
                     listCartIng.push({
                         id: `${d.getDate()}${d.getHours()}${d.getMinutes()}${d.getSeconds()}${Math.floor(Math.random() * 10000)}`,
                         listPr: cartIng,
-                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+                        date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} (${d.getHours()}:${d.getMinutes()}:${d.getSeconds()})`,
                         totalPrice,
                         totalLength
                     })
@@ -748,7 +766,7 @@
                                 Đã xong
                             </li>
                         </ul>
-                        <h2 class="cart-list-header">Đã xử xong</h2>
+                        <h2 class="cart-list-header">Đã xong</h2>
                         <ul class="cart-list-product">`
             const listCart = JSON.parse(localStorage.getItem('listCarted-' + userInfo.account))
             let item = ''
@@ -767,7 +785,7 @@
                 }
             }
             else {
-                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đã xử xong</li> `
+                item = `<li li style = "justify-content: center;" > Chưa có sản phẩm nào trong danh mục đã xong</li> `
             }
             html = html + item + `</ul ></div> `
             cartList.innerHTML = html
@@ -853,11 +871,17 @@
             return nFormat.format(n) + ' ' + currency;
         }
 
+        function scrollTopF() {
+            window.scrollTo(top)
+        }
+
+
+
     </script>
     <script type="module" src="./js/render.js"></script>
     <script type="module" src="./js/filter.js"></script>
     <script type="module" src="./js/search.js"></script>
-
+    <script type="module" src="./js/ViewndividualProducts.js"></script>
 </body>
 
 </html>

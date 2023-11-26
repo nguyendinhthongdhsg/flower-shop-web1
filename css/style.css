@@ -433,6 +433,16 @@
     width: 100%;
 }
 
+.main-introduce>h2,
+.main-introduce>p {
+    margin-top: 12px;
+    color: #2f3a62;
+}
+
+.main-introduce>p:last-child {
+    margin-bottom: 60px;
+}
+
 .main-item {
     width: 100%;
 }
@@ -823,4 +833,33 @@ button.cart-list-btnBuy-delete {
 
 .modal-cart-list-ing-ed>div>ul>li>span {
     margin-right: 12px;
+}
+
+.scrollToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
+    padding: 14px;
+    border-radius: 50%;
+    border: 1px solid #dcdcdc;
+    background-color: #fff;
+    box-shadow: var(--box-shadow-color);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: box-shadow linear 0.2s, opacity linear 0.2s;
+    font-size: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scrollToTop:hover {
+    color: #000;
+    opacity: 1;
+    box-shadow: var(--hover-box-shadow-color);
+}
+
+.scrollToTop>i {
+    rotate: -90deg;
 }

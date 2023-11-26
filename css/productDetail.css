@@ -16,6 +16,7 @@
 
 .product-detail-info {
     margin-left: 20px;
+    flex: 1;
 }
 
 .product-detail-info>h3 {
@@ -86,4 +87,18 @@
 
 .product-detail-quantity>button:first-child {
     margin-left: 0;
+}
+
+.product-detail-next {
+    display: flex;
+}
+
+.product-detail-next>button {
+    font-size: 4rem;
+    color: #555;
+    transition: color linear 0.2s;
+}
+
+.product-detail-next>button:hover {
+    color: #333;
 }
